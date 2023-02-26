@@ -8,7 +8,7 @@ type PromptContext struct {
 }
 
 // WriteWithPrompt writes with special prompt, like summarize, explain_this, improve_writing
-func (cli *NotionClient) WriteWithPrompt(content string, promptType common.PromptType) (string, error) {
+func (cli *NotionClient) WriteWithPrompt(promptType common.PromptType, content string) (string, error) {
 	req := &NotionRequest{
 		Context: PromptContext{
 			SelectedText: content,

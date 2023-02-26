@@ -11,7 +11,7 @@ type TranslateContext struct {
 }
 
 // Translate will translate the content to given language
-func (cli *NotionClient) Translate(content string, lang common.SupportedLanguage) (string, error) {
+func (cli *NotionClient) Translate(lang common.SupportedLanguage, content string) (string, error) {
 	req := &NotionRequest{
 		Context: TranslateContext{
 			Text:     content,
