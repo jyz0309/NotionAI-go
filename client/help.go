@@ -30,7 +30,7 @@ func (cli *NotionClient) HelpMeEdit(content, prompt string) (string, error) {
 	req := &NotionRequest{
 		Context: HelpEditContext{
 			Prompt:       prompt,
-			Type:         common.HelpMeDraft,
+			Type:         common.HelpMeEdit,
 			SelectedText: content,
 		},
 		Model: OpenAIModel,
