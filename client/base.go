@@ -1,12 +1,11 @@
 package client
 
 import (
+	"bufio"
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
-	"strings"
 
 	"github.com/google/uuid"
 )
@@ -65,26 +64,34 @@ func (cli *NotionClient) Post(req *NotionRequest) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	defer resp.Body.Close()
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return "", err
-	}
-	conpletions := strings.Split(string(body), "\n")
-	resps := make([]*NotionAIResp, 0)
-	for _, conpletion := range conpletions {
-		if len(conpletion) > 0 {
-			var aiResp *NotionAIResp
-			err := json.Unmarshal([]byte(conpletion), &aiResp)
-			if err != nil {
-				return "", err
-			}
-			resps = append(resps, aiResp)
+	if resp.StatusCode == 200 {
+		defer resp.Body.Close()
+		if err != nil {
+			return "", err
 		}
+		scanner := bufio.NewScanner(resp.Body)
+		conpletions := make([]string, 0)
+		for scanner.Scan() {
+			conpletions = append(conpletions, scanner.Text())
+		}
+		resps := make([]*NotionAIResp, 0)
+		for _, conpletion := range conpletions {
+			if len(conpletion) > 0 {
+				var aiResp *NotionAIResp
+				err := json.Unmarshal([]byte(conpletion), &aiResp)
+				if err != nil {
+					return "", err
+				}
+				resps = append(resps, aiResp)
+			}
+		}
+		var content string
+		for _, resp := range resps {
+			content += resp.Completion
+		}
+		return content, err
+	} else {
+		return "", fmt.Errorf("failed to get response, statusCode[%v], body[%v]", resp.StatusCode, resp.Body)
 	}
-	var content string
-	for _, resp := range resps {
-		content += resp.Completion
-	}
-	return content, err
+
 }
