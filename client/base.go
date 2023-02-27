@@ -35,12 +35,14 @@ type NotionAIResp struct {
 type NotionClient struct {
 	token   string
 	spaceID string
+	client  *http.Client
 }
 
 func NewClient(token, spaceID string) *NotionClient {
 	return &NotionClient{
 		token:   token,
 		spaceID: spaceID,
+		client:  &http.Client{},
 	}
 }
 
@@ -59,11 +61,11 @@ func (cli *NotionClient) Post(req *NotionRequest) (string, error) {
 	r.Header.Set("Content-Type", "application/json")
 	r.Header.Set("User-Agent", UserAgent)
 	r.Header.Set("cookie", fmt.Sprintf("token_v2=%v", cli.token))
-	client := &http.Client{}
-	resp, err := client.Do(r)
+	resp, err := cli.client.Do(r)
 	if err != nil {
 		return "", err
 	}
+	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return "", err
