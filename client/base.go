@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 
 	"github.com/google/uuid"
 )
@@ -42,6 +43,18 @@ func NewClient(token, spaceID string) *NotionClient {
 		token:   token,
 		spaceID: spaceID,
 		client:  &http.Client{},
+	}
+}
+
+func NewProxyClient(token, spaceID string, proxy string) *NotionClient {
+	proxyAddress, err := url.Parse(proxy)
+	if err != nil {
+		panic(err)
+	}
+	return &NotionClient{
+		token:   token,
+		spaceID: spaceID,
+		client:  &http.Client{Transport: &http.Transport{Proxy: http.ProxyURL(proxyAddress)}},
 	}
 }
 
