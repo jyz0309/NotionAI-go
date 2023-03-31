@@ -15,7 +15,7 @@ func (cli *NotionClient) Translate(lang common.SupportedLanguage, content string
 	req := &NotionRequest{
 		Context: TranslateContext{
 			Text:     content,
-			Type:     ChangeTone,
+			Type:     Translate,
 			Language: lang,
 		},
 		Model: OpenAIModel,
