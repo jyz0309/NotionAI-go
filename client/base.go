@@ -14,7 +14,7 @@ import (
 const (
 	UserAgent   = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3483.0 Safari/537.36"
 	API         = "https://www.notion.so/api/v3/getCompletion"
-	OpenAIModel = "openai-3"
+	OpenAIModel = "openai-4"
 )
 
 type NotionContext interface{}
